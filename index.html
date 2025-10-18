@@ -14,25 +14,21 @@
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
-        // LucideアイコンをcreateElementで使用
-        const Icon = ({ icon, ...props }) => {
-          const LucideIcon = lucide[icon];
-          return React.createElement(LucideIcon, props);
-        };
+        const { useState, useEffect, useMemo } = React;
         
-        // アイコンをラッパー関数で使用
-        const SearchIcon = (props) => Icon({ icon: 'Search', ...props });
-        const DownloadIcon = (props) => Icon({ icon: 'Download', ...props });
-        const UploadIcon = (props) => Icon({ icon: 'Upload', ...props });
-        const FileTextIcon = (props) => Icon({ icon: 'FileText', ...props });
-        const SettingsIcon = (props) => Icon({ icon: 'Settings', ...props });
-        const AlertCircleIcon = (props) => Icon({ icon: 'AlertCircle', ...props });
-        const CheckCircleIcon = (props) => Icon({ icon: 'CheckCircle', ...props });
-        const LoaderIcon = (props) => Icon({ icon: 'Loader', ...props });
-        const GlobeIcon = (props) => Icon({ icon: 'Globe', ...props });
-        const PlusIcon = (props) => Icon({ icon: 'Plus', ...props });
-        const Trash2Icon = (props) => Icon({ icon: 'Trash2', ...props });
-        const XIcon = (props) => Icon({ icon: 'X', ...props });
+        // アイコンを絵文字で定義（シンプルに）
+        const Search = (props) => React.createElement('span', props, '🔍');
+        const Download = (props) => React.createElement('span', props, '💾');
+        const Upload = (props) => React.createElement('span', props, '📤');
+        const FileText = (props) => React.createElement('span', props, '📄');
+        const Settings = (props) => React.createElement('span', props, '⚙️');
+        const AlertCircle = (props) => React.createElement('span', props, '⚠️');
+        const CheckCircle = (props) => React.createElement('span', props, '✅');
+        const Loader = (props) => React.createElement('span', props, '⏳');
+        const Globe = (props) => React.createElement('span', props, '🌐');
+        const Plus = (props) => React.createElement('span', props, '➕');
+        const Trash2 = (props) => React.createElement('span', props, '🗑️');
+        const X = (props) => React.createElement('span', props, '❌');
                 
         // サンプルデータ
         const SAMPLE_DATA = {
