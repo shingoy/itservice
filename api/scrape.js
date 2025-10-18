@@ -1,6 +1,6 @@
-javascriptimport { load } from 'cheerio';
+const cheerio = require('cheerio');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   try {
     const response = await fetch(url);
     const html = await response.text();
-    const $ = load(html);
+    const $ = cheerio.load(html);
 
     const title = $('h1').first().text().trim() || $('title').text().trim();
     const ministry = extractMinistry(url);
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 function extractMinistry(url) {
   if (url.includes('digital.go.jp')) return 'デジタル庁';
