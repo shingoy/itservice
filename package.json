@@ -1,7 +1,6 @@
 {
   "name": "gov-it-dashboard",
   "version": "1.0.0",
-  "type": "module",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12"
   }
