@@ -370,56 +370,42 @@
           };
 
           const startScraping = async () => {
-            const validUrls = scrapeUrls.filter(url => url.trim() !== '');
-            if (validUrls.length === 0) {
-              showToast('URLを入力してください', 'error');
-              return;
-            }
+  const validUrls = scrapeUrls.filter(url => url.trim() !== '');
+  if (validUrls.length === 0) {
+    showToast('URLを入力してください', 'error');
+    return;
+  }
 
-            setIsScraping(true);
-            setCompletedDocs([]);
-            setScrapingProgress(validUrls.map(url => ({ url, status: 'waiting', message: '待機中...' })));
+  setIsScraping(true);
+  setCompletedDocs([]);
+  setScrapingProgress(validUrls.map(url => ({ url, status: 'waiting', message: '待機中...' })));
 
-            const controller = new AbortController();
-            setAbortController(controller);
+  const controller = new AbortController();
+  setAbortController(controller);
 
-            try {
-              const CONCURRENT_LIMIT = 3;
-              const results = [];
-              
-              for (let i = 0; i < validUrls.length; i += CONCURRENT_LIMIT) {
-                if (controller.signal.aborted) break;
-                
-                const batch = validUrls.slice(i, i + CONCURRENT_LIMIT);
-                const batchPromises = batch.map((url, batchIndex) => 
-                  scrapeWithVercel(url, i + batchIndex, controller.signal)
-                );
-                
-                const batchResults = await Promise.all(batchPromises);
-                results.push(...batchResults);
-                
-                if (i + CONCURRENT_LIMIT < validUrls.length && !controller.signal.aborted) {
-                  await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-              }
+  try {
+    // 完全並列処理：全URLを一気に実行
+    const promises = validUrls.map((url, index) => 
+      scrapeWithVercel(url, index, controller.signal)
+    );
+    
+    const results = await Promise.all(promises);
+    const newDocs = results.filter(doc => doc !== null);
+    setCompletedDocs(newDocs);
 
-              const newDocs = results.filter(doc => doc !== null);
-              setCompletedDocs(newDocs);
-
-              if (newDocs.length > 0 && !controller.signal.aborted) {
-                setDocs(prev => [...prev, ...newDocs]);
-                showToast(newDocs.length + '件のドキュメントを追加しました', 'success');
-              }
-            } catch (error) {
-              if (error.name !== 'AbortError') {
-                showToast('エラーが発生しました: ' + error.message, 'error');
-              }
-            } finally {
-              setIsScraping(false);
-              setAbortController(null);
-            }
-          };
-
+    if (newDocs.length > 0 && !controller.signal.aborted) {
+      setDocs(prev => [...prev, ...newDocs]);
+      showToast(newDocs.length + '件のドキュメントを追加しました', 'success');
+    }
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      showToast('エラーが発生しました: ' + error.message, 'error');
+    }
+  } finally {
+    setIsScraping(false);
+    setAbortController(null);
+  }
+};
           const stopScraping = () => {
             if (abortController) {
               abortController.abort();
