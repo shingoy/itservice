@@ -1,0 +1,11 @@
+{
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "installCommand": "cd api && npm install",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
